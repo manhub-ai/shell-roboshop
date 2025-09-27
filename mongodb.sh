@@ -34,7 +34,12 @@ VALIDATE(){ #functions receive inputs through arguments just like scripts
         echo -e " $2 ... $G SUCCESS $N" | tee -a $LOG_FILE
     fi
 }
-    cp mongo.repo "/etc/yum/repos.d/mongo.repo"
+    if [ ! -f mongo.repo ]; then
+        echo -e "mongo.repo file not found in current directory ... $R FAILURE $N" | tee -a $LOG_FILE
+        exit 1
+    fi
+
+    cp mongo.repo /etc/yum/repos.d/mongo.repo
     VALIDATE $? "Adding MongoDB repo"
 
     dnf install mongodb-org -y &>>$LOG_FILE
