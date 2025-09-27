@@ -33,7 +33,7 @@ VALIDATE(){ #functions receive inputs through arguments just like scripts
     else
         echo -e " $2 ... $G SUCCESS $N" | tee -a $LOG_FILE
     fi
-
+}
     cp mongo.repo /etc.yum.repos.d/mongo.repo 
     VALIDATE $? "Adding MongoDB repo"
 
@@ -46,4 +46,4 @@ VALIDATE(){ #functions receive inputs through arguments just like scripts
     systemctl start mongod &>>$LOG_FILE
     VALIDATE $? "Starting MongoDB"
 
-}
+
