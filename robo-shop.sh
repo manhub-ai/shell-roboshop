@@ -1,21 +1,8 @@
 #!/bin/bash
 
-export PATH=$PATH:/usr/local/bin
-export AWS_PROFILE=default  # or your named profile
-
-if ! command -v aws &> /dev/null; then
-    echo "❌ AWS CLI not found. Please install it or fix your PATH."
-    exit 1
-fi
-
-if ! aws sts get-caller-identity &> /dev/null; then
-    echo "❌ AWS credentials not found or invalid. Run 'aws configure'."
-    exit 1
-fi
-	
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-062ee2abee617cab7" # replace with your SG ID
-ZONE_ID="Z0948150OFPSYTNVYZOY" # replace with your ID
+ZONE_ID="Z011643715JP8CMWCW5FX" # replace with your ID
 DOMAIN_NAME="manjunatha.space"
 
 for instance in $@ # mongodb redis mysql
@@ -25,10 +12,10 @@ do
     # Get Private IP
     if [ $instance != "frontend" ]; then
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text)
-        RECORD_NAME="$instance.$DOMAIN_NAME" # mongodb.daws86s.fun
+        RECORD_NAME="$instance.$DOMAIN_NAME" # mongodb.manjunatha.space
     else
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
-        RECORD_NAME="$DOMAIN_NAME" # daws86s.fun
+        RECORD_NAME="$DOMAIN_NAME" # manjunatha.space
     fi
 
     echo "$instance: $IP"
