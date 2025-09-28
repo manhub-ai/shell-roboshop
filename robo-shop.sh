@@ -16,7 +16,9 @@ do
         IP=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --query 'Reservations[0].Instances[0].PrivateIpAddress' --output text )
         RECORD_NAME="$DOMAIN_NAME"
     fi
+
     echo "$instance: $IP"
+
 
     # Creates route 53 records based on env name
 
@@ -24,7 +26,7 @@ do
         --hosted-zone-id $ZONE_ID \
         --change-batch '
         {
-            "Comment": "Testing creating a record set"
+            "Comment": "updating a record set"
             ,"Changes": [{
             "Action"              : "UPSERT"
             ,"ResourceRecordSet"  : {
@@ -32,7 +34,7 @@ do
                 ,"Type"             : "A"
                 ,"TTL"              : 1
                 ,"ResourceRecords"  : [{
-                    "Value"         : "'" $IP "'"
+                    "Value"         : "' $IP '"
                 }]
             }
             }]
