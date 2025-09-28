@@ -1,10 +1,15 @@
 #!/bin/bash
 
 export PATH=$PATH:/usr/local/bin
+export AWS_PROFILE=default  # or your named profile
 
-# Fail fast if AWS CLI is missing
 if ! command -v aws &> /dev/null; then
     echo "❌ AWS CLI not found. Please install it or fix your PATH."
+    exit 1
+fi
+
+if ! aws sts get-caller-identity &> /dev/null; then
+    echo "❌ AWS credentials not found or invalid. Run 'aws configure'."
     exit 1
 fi
 	
