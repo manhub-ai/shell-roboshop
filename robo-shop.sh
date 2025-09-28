@@ -1,4 +1,12 @@
 #!/bin/bash
+
+export PATH=$PATH:/usr/local/bin
+
+# Fail fast if AWS CLI is missing
+if ! command -v aws &> /dev/null; then
+    echo "❌ AWS CLI not found. Please install it or fix your PATH."
+    exit 1
+fi
 	
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-062ee2abee617cab7" # replace with your SG ID
