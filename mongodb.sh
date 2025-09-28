@@ -1,54 +1,50 @@
 #!/bin/bash
 
 #check if user is root or not
+
 USERID=$(id -u)
-# Colour Variables
 R="\e[31m"
 G="\e[32m"
-Y="\e[33m"      
-B="\e[34m"
-M="\e[35m"
-C="\e[36m"
-W="\e[37m"
+Y="\e[33m"
 N="\e[0m"
 
-
-
-LOG_FOLDER="/var/log/shell-roboshop"
+LOGS_FOLDER="/var/log/shell-roboshop"
 SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
-LOG_FILE="$LOG_FOLDER/$SCRIPT_NAME.log"
+LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-script/16-logs.log
 
-mkdir -p $LOG_FOLDER
+mkdir -p $LOGS_FOLDER
+echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
-echo "script started at: $(date)" | tee -a $LOG_FILE
 if [ $USERID -ne 0 ]; then
-    echo "ERROR: Please run this script as root or using sudo"
-    exit 1
+    echo "ERROR:: Please run this script with root privelege"
+    exit 1 # failure is other than 0
 fi
 
-VALIDATE(){ #functions receive inputs through arguments just like scripts
+VALIDATE(){ # functions receive inputs through args just like shell script args
     if [ $1 -ne 0 ]; then
-        echo -e " $2 ... $R FAILURE $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
     else
-        echo -e " $2 ... $G SUCCESS $N" | tee -a $LOG_FILE
+        echo -e "$2 ... $G SUCCESS $N" | tee -a $LOG_FILE
     fi
 }
-    if [ ! -f mongo.repo ]; then
-        echo -e "mongo.repo file not found in current directory ... $R FAILURE $N" | tee -a $LOG_FILE
-        exit 1
-    fi
 
-    cp mongo.repo /etc/yum/repos.d/mongo.repo
-    VALIDATE $? "Adding MongoDB repo"
+cp mongo.repo /etc/yum.repos.d/mongo.repo
+VALIDATE $? "Adding Mongo repo"
 
-    dnf install mongodb-org -y &>>$LOG_FILE
-    VALIDATE $? "Installing MongoDB"
+dnf install mongodb-org -y &>>$LOG_FILE
+VALIDATE $? "Installing MongoDB"
 
-    systemctl enable mongod &>>$LOG_FILE
-    VALIDATE $? "Enabling MongoDB"
+systemctl enable mongod &>>$LOG_FILE
+VALIDATE $? "Enable MongoDB"
 
-    systemctl start mongod &>>$LOG_FILE
-    VALIDATE $? "Starting MongoDB"
+systemctl start mongod 
+VALIDATE $? "Start MongoDB"
+
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
+VALIDATE $? "Allowing remote connections to MongoDB"
+
+systemctl restart mongod
+VALIDATE $? "Restarted MongoDB"
 
 
