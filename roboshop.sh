@@ -2,12 +2,11 @@
 
 AMI_ID="ami-09c813fb71547fc4f"
 SG_ID="sg-062ee2abee617cab7" # replace with your SG ID
-AWS="/usr/local/bin/aws"
-#ZONE_ID="Z011643715JP8CMWCW5FX" # replace with your ID
-#DOMAIN_NAME="manjunatha.space"
+ZONE_ID="Z011643715JP8CMWCW5FX" # replace with your ID
+DOMAIN_NAME="manjunatha.space"
 
 
-or instance in $@ # mongodb redis mysql
+for instance in $@ # mongodb redis mysql
 do
     INSTANCE_ID=$(aws ec2 run-instances --image-id $AMI_ID --instance-type t3.micro --security-group-ids $SG_ID --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" --query 'Instances[0].InstanceId' --output text)
 
