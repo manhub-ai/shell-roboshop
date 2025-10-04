@@ -57,30 +57,27 @@ VALIDATE $? "Downloading catalogue application"
 cd /app 
 VALIDATE $? "changing to app Directory"
 
-rm -rf /app*
+rm -rf /app/*
 VALIDATE $? "Removing existing code"
 
 unzip /tmp/catalogue.zip &>>$LOG_FILE
 VALIDATE $? "unzip catalogue"
 
 npm install &>>$LOG_FILE
-VALIDATE $? "Installing dependencies"
+VALIDATE $? "Install dependencies"
 
-cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOG_FILE
+cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Copy systemctl service"
 
 systemctl daemon-reload
 systemctl enable catalogue &>>$LOG_FILE
-VALIDATE $? "Enable Catalogue"
-
-systemctl start catalogue
-VALIDATE $? "Start catalogue"
+VALIDATE $? "Enable catalogue"
 
 cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Copy mongo repo"
 
 dnf install mongodb-mongosh -y &>>$LOG_FILE
-VALIDATE $? "Installing Mongodb Client"
+VALIDATE $? "Install MongoDB client"
 
 mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOG_FILE
 VALIDATE $? "Load catalogue products"
