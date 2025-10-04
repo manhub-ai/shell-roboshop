@@ -35,7 +35,7 @@ dnf install mysql-server -y &>>$LOG_FILE
 VALIDATE $? "Installing Mysql Server"
 
 systemctl enable mysqld &>>$LOG_FILE
-VALIDATE $? " Enabling Mysqld"
+VALIDATE $? "Enabling Mysqld"
 
 systemctl start mysqld   &>>$LOG_FILE
 VALIDATE $? "Starting mysqld"
@@ -45,4 +45,4 @@ VALIDATE $? "Setting up root password"
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $START_TIME))
-echo "Total time taken to execute the script: $Y $TOTAL_TIME seconds $N"
+echo -e "Total time taken to execute the script: $Y $TOTAL_TIME seconds $N"
